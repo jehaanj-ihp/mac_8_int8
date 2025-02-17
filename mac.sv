@@ -99,41 +99,41 @@ module adder_tree (
     output logic signed [18:0] o_sum;
 
     // Wires for propagation of results
-    logic signed [16:0] sum_stage_0_0, sum_stage_0_1, sum_stage_0_2, sum_stage_0_3; // Sums of Stage 0
-    logic signed [17:0] sum_stage_1_0, sum_stage_1_1;                               // Sums of Stage 1
-    logic signed [17:0] sum_stage_2_0;                                              // Sums of Stage 2
+    logic signed [16:0] sum_stage_0_0_wire, sum_stage_0_1_wire, sum_stage_0_2_wire, sum_stage_0_3_wire; // Sums of Stage 0
+    logic signed [17:0] sum_stage_1_0_wire, sum_stage_1_1_wire;                                         // Sums of Stage 1
+    logic signed [17:0] sum_stage_2_0_wire;                                                             // Sums of Stage 2
 
     // Intermediate Registers
-    logic signed [16:0] sum_stage_0_0_reg, sum_stage_0_1_reg, sum_stage_0_2_reg, sum_stage_0_3_reg; // Sums of Stage 0
-    logic signed [17:0] sum_stage_2_0_reg; // Sums of Stage 2 
+    logic signed [16:0] sum_stage_0_0_reg, sum_stage_0_1_reg, sum_stage_0_2_reg, sum_stage_0_3_reg; // Registers for sums of Stage 0
+    logic signed [17:0] sum_stage_2_0_reg;                                                          // Registers for sum of Stage 2 
     
     // Stage 0
     adder #(.BITWIDTH(16)) add_stage_0_0
         (
             .i_a(i_0),
             .i_b(i_1),
-            .o_sum(sum_stage_0_0)
+            .o_sum(sum_stage_0_0_wire)
         ); 
 
     adder #(.BITWIDTH(16)) add_stage_0_1
         (
             .i_a(i_2),
             .i_b(i_3),
-            .o_sum(sum_stage_0_1)
+            .o_sum(sum_stage_0_1_wire)
         ); 
 
     adder #(.BITWIDTH(16)) add_stage_0_2
         (
             .i_a(i_4),
             .i_b(i_5),
-            .o_sum(sum_stage_0_2)
+            .o_sum(sum_stage_0_2_wire)
         ); 
 
     adder #(.BITWIDTH(16)) add_stage_0_3
         (
             .i_a(i_6),
             .i_b(i_7),
-            .o_sum(sum_stage_0_3)
+            .o_sum(sum_stage_0_3_wire)
         ); 
 
     // Stage 1
@@ -141,22 +141,22 @@ module adder_tree (
         (
             .i_a(sum_stage_0_0_reg),
             .i_b(sum_stage_0_1_reg),
-            .o_sum(sum_stage_1_0)
+            .o_sum(sum_stage_1_0_wire)
         ); 
 
     adder #(.BITWIDTH(17)) add_stage_1_1
         (
             .i_a(sum_stage_0_2_reg),
             .i_b(sum_stage_0_3_reg),
-            .o_sum(sum_stage_1_1)
+            .o_sum(sum_stage_1_1_wire)
         ); 
 
     // Stage 2
     adder #(.BITWIDTH(18)) add_stage_2_0
         (
-            .i_a(sum_stage_1_0),
-            .i_b(sum_stage_1_1),
-            .o_sum(sum_stage_2_0)
+            .i_a(sum_stage_1_0_wire),
+            .i_b(sum_stage_1_1_wire),
+            .o_sum(sum_stage_2_0_wire)
         );
 
     always_ff @( posedge i_clk ) begin
@@ -167,11 +167,11 @@ module adder_tree (
             sum_stage_0_3_reg <= 0;
             sum_stage_2_0_reg <= 0;
         end else begin
-            sum_stage_0_0_reg <= sum_stage_0_0;
-            sum_stage_0_1_reg <= sum_stage_0_1;
-            sum_stage_0_2_reg <= sum_stage_0_2;
-            sum_stage_0_3_reg <= sum_stage_0_3;
-            sum_stage_2_0_reg <= sum_stage_2_0;
+            sum_stage_0_0_reg <= sum_stage_0_0_wire;
+            sum_stage_0_1_reg <= sum_stage_0_1_wire;
+            sum_stage_0_2_reg <= sum_stage_0_2_wire;
+            sum_stage_0_3_reg <= sum_stage_0_3_wire;
+            sum_stage_2_0_reg <= sum_stage_2_0_wire;
         end
     end
 
