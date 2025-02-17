@@ -175,7 +175,7 @@ module adder_tree (
         end
     end
 
-    assign o_sum = sum_stage_2_0;
+    assign o_sum = sum_stage_2_0_reg;
 
 endmodule
 
